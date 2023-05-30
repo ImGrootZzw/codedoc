@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - master
+permissions:
+  contents: write
 
 env: # 设置环境变量
   TZ: Asia/Shanghai # 时区（设置时区可使页面中的`最近更新时间`使用该时区时间）
@@ -45,9 +47,9 @@ jobs:
           git config user.email ${user_email}
           git add -A
           git commit -m "CI auto deploy, $commit_info"
-          remote_addr=`echo $remote_addr | awk -F'://' '{print $2}'`
-          remote_addr=https://${user_name}:${{secrets.GITHUB_TOKEN}}@${remote_addr}
-          git remote add origin ${remote_addr}
+          remote_addr1=`echo $remote_addr | awk -F'://' '{print $2}'`
+          remote_addrPush=https://${user_name}:${GITHUB_TOKEN}@${remote_addr1}
+          git remote add origin ${remote_addrPush}
           git push origin HEAD:$deploy_branch --force # 推送到github $deploy_branch分支
 
       # 只提交到github pages也可以使用github-pages-deploy-action，详见: https://github.com/JamesIves/github-pages-deploy-action
