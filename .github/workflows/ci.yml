@@ -27,12 +27,12 @@ jobs:
         uses: actions/checkout@master # 使用的动作。格式：userName/repoName。作用：检出仓库，获取源码。 官方actions库：https://github.com/actions
 
       - name: vuepress-deploy
-        uses: jenkey2011/vuepress-deploy@master
+        uses: ImGrootZzw/codoc@master
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          TARGET_REPO: username/repo
-          TARGET_BRANCH: master
-          BUILD_SCRIPT: yarn && yarn docs:build
+          TARGET_REPO: ImGrootZzw/codoc
+          TARGET_BRANCH: gh_pages
+          BUILD_SCRIPT: yarn && yarn build
           BUILD_DIR: docs/.vuepress/dist
           CNAME: https://www.imgroot.club
       # - name: Use Node.js ${{ matrix.node-version }} # 步骤2
