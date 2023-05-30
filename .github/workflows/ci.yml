@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - master
+
 permissions:
   contents: write
 
@@ -17,39 +18,50 @@ jobs:
   build: # 自定义名称
     runs-on: ubuntu-latest # 运行在虚拟机环境ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
+    # strategy:
+    #   matrix:
+    #     node-version: [16.x]
 
     steps:
       - name: Checkout # 步骤1
-        uses: actions/checkout@v2 # 使用的动作。格式：userName/repoName。作用：检出仓库，获取源码。 官方actions库：https://github.com/actions
-      - name: Use Node.js ${{ matrix.node-version }} # 步骤2
-        uses: actions/setup-node@v2 # 作用：安装nodejs
-        with:
-          node-version: ${{ matrix.node-version }} # 版本
-      - name: Build-and-deploy # 步骤3
-        env: # 设置环境变量
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }} # toKen私密变量
-          # CODING_TOKEN: ${{ secrets.CODING_TOKEN }} # 腾讯云开发者平台（coding）私密token
-        run: |
-          remote_addr=`git remote get-url --push origin`
-          commit_info=`git describe --all --always --long`
-          user_name=`git log -1 --pretty=format:'%an'`
-          user_email=`git log -1 --pretty=format:'%ae'`
-          deploy_branch=gh-pages
-          yarn
-          yarn build
-          cd docs/.vuepress/dist
-          git config --global init.defaultBranch $deploy_branch
-          git init
-          git config user.name ${user_name}
-          git config user.email ${user_email}
-          git add -A
-          git commit -m "CI auto deploy, $commit_info"
-          remote_addr1=`echo $remote_addr | awk -F'://' '{print $2}'`
-          remote_addrPush=https://${user_name}:${GITHUB_TOKEN}@${remote_addr1}
-          git remote add origin ${remote_addrPush}
-          git push origin HEAD:$deploy_branch --force # 推送到github $deploy_branch分支
+        uses: actions/checkout@master # 使用的动作。格式：userName/repoName。作用：检出仓库，获取源码。 官方actions库：https://github.com/actions
+
+      - name: vuepress-deploy
+        uses: jenkey2011/vuepress-deploy@master
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          TARGET_REPO: username/repo
+          TARGET_BRANCH: master
+          BUILD_SCRIPT: yarn && yarn docs:build
+          BUILD_DIR: docs/.vuepress/dist
+          CNAME: https://www.imgroot.club
+      # - name: Use Node.js ${{ matrix.node-version }} # 步骤2
+      #   uses: actions/setup-node@v2 # 作用：安装nodejs
+      #   with:
+      #     node-version: ${{ matrix.node-version }} # 版本
+
+      # - name: Build-and-deploy # 步骤3
+      #   env: # 设置环境变量
+      #     GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }} # toKen私密变量
+      #     # CODING_TOKEN: ${{ secrets.CODING_TOKEN }} # 腾讯云开发者平台（coding）私密token
+      #   run: |
+      #     remote_addr=`git remote get-url --push origin`
+      #     commit_info=`git describe --all --always --long`
+      #     user_name=`git log -1 --pretty=format:'%an'`
+      #     user_email=`git log -1 --pretty=format:'%ae'`
+      #     deploy_branch=gh-pages
+      #     yarn
+      #     yarn build
+      #     cd docs/.vuepress/dist
+      #     git config --global init.defaultBranch $deploy_branch
+      #     git init
+      #     git config user.name ${user_name}
+      #     git config user.email ${user_email}
+      #     git add -A
+      #     git commit -m "CI auto deploy, $commit_info"
+      #     remote_addr1=`echo $remote_addr | awk -F'://' '{print $2}'`
+      #     remote_addrPush=https://${user_name}:${GITHUB_TOKEN}@${remote_addr1}
+      #     git remote add origin ${remote_addrPush}
+      #     git push origin HEAD:$deploy_branch --force # 推送到github $deploy_branch分支
 
       # 只提交到github pages也可以使用github-pages-deploy-action，详见: https://github.com/JamesIves/github-pages-deploy-action
