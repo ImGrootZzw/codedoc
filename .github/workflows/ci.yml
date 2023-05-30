@@ -45,6 +45,7 @@ jobs:
           remote_addr=`git remote get-url --push origin`
           user_name=`git log -1 --pretty=format:'%an'`
           user_email=`git log -1 --pretty=format:'%ae'`
+          deploy_branch=gh-pages
 
           git config --global user.name ${user_name}
           git config --global user.email ${user_email}
@@ -53,8 +54,8 @@ jobs:
           git init
           git add .
           git commit -m "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
-          git push --force --quiet "https://$GITHUB_TOKEN@github.com/${user_name}/https://github.com/ImGrootZzw/codoc.git" master:gh-pages
-
+          git remote add origin ${remote_addr}
+          git push origin HEAD:$deploy_branch --force # 推送到github $deploy_branch分支
       # - name: Use Node.js ${{ matrix.node-version }} # 步骤2
       #   uses: actions/setup-node@v2 # 作用：安装nodejs
       #   with:
