@@ -24,17 +24,20 @@ jobs:
 
     steps:
       - name: Checkout # 步骤1
-        uses: actions/checkout@master # 使用的动作。格式：userName/repoName。作用：检出仓库，获取源码。 官方actions库：https://github.com/actions
+        uses: actions/checkout@v2 # 使用的动作。格式：userName/repoName。作用：检出仓库，获取源码。 官方actions库：https://github.com/actions
 
-      - name: vuepress-deploy
+      - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+        run: | #注意我这里是使用的yarn管理包，如果你使用的npm，请换成npm的命令：npm install和npm run build
+          npm install
+          npm run build
+
+      - name: Deploy
         uses: ImGrootZzw/codoc@master
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          TARGET_REPO: ImGrootZzw/codoc
-          TARGET_BRANCH: gh_pages
-          BUILD_SCRIPT: yarn && yarn build
-          BUILD_DIR: docs/.vuepress/dist
-          CNAME: https://www.imgroot.club
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: docs/.vuepress/dist # The folder the action should deploy.
+          CLEAN: true # Automatically remove deleted files from the deploy branch
       # - name: Use Node.js ${{ matrix.node-version }} # 步骤2
       #   uses: actions/setup-node@v2 # 作用：安装nodejs
       #   with:
