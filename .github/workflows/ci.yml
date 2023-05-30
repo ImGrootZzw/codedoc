@@ -53,7 +53,8 @@ jobs:
           git init
           git add .
           git commit -m "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
-          git push --force --quiet "https://$GITHUB_TOKEN@github.com/${user_name}/${remote_addr}.git" master:gh-pages
+          git push --force --quiet "https://$GITHUB_TOKEN@github.com/${user_name}/https://github.com/ImGrootZzw/codoc.git" master:gh-pages
+
       # - name: Use Node.js ${{ matrix.node-version }} # 步骤2
       #   uses: actions/setup-node@v2 # 作用：安装nodejs
       #   with:
