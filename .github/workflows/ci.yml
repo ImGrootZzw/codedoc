@@ -40,15 +40,16 @@ jobs:
         env:
           # GitHub Token
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          REMOTE_ADDR: ${{ secrets.TARGET_GITADDRESS }}
 
         run: |
-          remote_addr=`git remote get-url --push origin`
+          # remote_addr=`git remote get-url --push origin`
           user_name=`git log -1 --pretty=format:'%an'`
           user_email=`git log -1 --pretty=format:'%ae'`
           deploy_branch=gh-pages
 
           git config --global user.name ${user_name}
-          git config --global user.email ${user_email}
+          git config --global user.email ${   }
 
           cd docs/.vuepress/dist
           git init
